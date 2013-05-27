@@ -1,0 +1,113 @@
+PhpGw2Api
+=========
+___
+>PhPGw2Api is a PHP wrapper for the GW2 API.
+
+Usage
+-
+
+    require_once 'src/PhpGw2Api/Service.php';
+    
+    // Instatiate a new service object and specify cache path and TTL settings
+    $service = new PhpGw2Api\Service(__DIR__ . '/cache', 3600);
+    
+    // Set how to return the JSON
+    $service->returnAssoc(true);
+    
+    // Query 
+    $items = $service->getItems();
+    
+    // Play around
+    $itemId = $items['items'][50];
+    $item = $service->getItemDetails(array('item_id' => $itemId));
+
+    var_dump($item);
+
+Caching
+-
+If a cache directory is specified, the JSON response will be cached locally with the specified lifetime, or a default of 3600 seconds.
+You can specify cache settings in the following ways:
+
+Upon instatiation:
+
+    $service = new PhpGw2Api\Service(__DIR__ . '/cache', 3600);
+
+Using the fluent interface:
+
+    $service->setCacheDirectory(__DIR__ . '/cache')
+            ->setCacheTtl(120)
+            ->getItems();
+
+Reference
+-
+
+The following draws reference from [https://forum-en.guildwars2.com/forum/community/api/API-Documentation](https://forum-en.guildwars2.com/forum/community/api/API-Documentation)
+
+### getEvents
+
+*Optional parameters: world_id, map_id, event_id*
+
+    $service->getEvents(array('world_id' => 1001));
+    
+### getEventNames
+
+*Optional parameters: lang*
+
+    $service->getEventNames(array('lang' => 'fr'));
+    
+### getMapNames
+
+*Optional parameters: lang*
+
+    $service->getMapNames(array('lang' => 'fr'));
+    
+### getWorldNames
+
+*Optional parameters: lang*
+
+    $service->getWorldNames(array('lang' => 'fr'));
+    
+### getMatches
+
+    $service->getMatches();
+    
+### getMatchDetails
+
+*Requred parameters: match_id*
+
+    $service->getMatchDetails(array('match_id' => '2-3'));
+    
+### getObjectiveNames
+
+*Optional parameters: lang*
+
+    $service->getObjectiveNames(array('lang' => 'fr'));
+    
+### getItems
+
+    $service->getItems();
+    
+### getItemDetails
+
+*Required parameters: item_id*
+*Optional parameters: lang*
+
+    $service->getItemDetails(array('item_id' => 15728));
+    
+### getRecipes
+
+    $service->getRecipes();
+    
+### getRecipeDetails
+
+*Required parameters: recipe_id*
+
+    $service->getRecipeDetails(array('recipe_id' => 984));
+
+License
+- 
+Released under the [MIT licence](http://opensource.org/licenses/MIT)
+
+Feedback & contribution
+-
+Feedback and contribution are welcome!
