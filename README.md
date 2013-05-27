@@ -1,7 +1,7 @@
 PhpGw2Api
 =========
-___
->PhPGw2Api is a PHP wrapper for the GW2 API.
+
+>PhpGw2Api is a PHP wrapper for the GW2 API.
 
 Usage
 -
@@ -110,4 +110,4 @@ Released under the [MIT licence](http://opensource.org/licenses/MIT)
 
 Feedback & contribution
 -
-Feedback and contribution are welcome!
+Feedback and contribution are welcomed!
