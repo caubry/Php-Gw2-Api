@@ -337,11 +337,8 @@ class Service
 		Cache::setDirectory($this->_cacheDirectory);
 		
 		if(!$this->_result = $this->_getCachedResult($requestUri)) {
-			
-			echo "Executing cURL";
-			
 			$this->_executeCurl($requestUri);
-		} else echo "Found cache";
+		}
 		return (array) json_decode($this->_result, $this->_returnAssoc);
 	}
 	
