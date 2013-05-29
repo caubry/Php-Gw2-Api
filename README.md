@@ -38,6 +38,10 @@ Using the fluent interface:
             ->setCacheTtl(120)
             ->getItems();
 
+Additionally, TTL may be specified on a per request basis:
+
+    $service->getItems(array(), 60);
+
 Reference
 -
 
