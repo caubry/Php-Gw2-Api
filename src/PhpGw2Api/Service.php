@@ -162,25 +162,29 @@ class Service
 	 * Return details about a WvW match
 	 * 
 	 * @param array $parameters
+	 * @param integer $ttl [optional] Override the default ttl for this request
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function getMatchDetails(array $parameters)
+	public function getMatchDetails(array $parameters, $ttl = null)
 	{
 		if(!array_key_exists('match_id', $parameters)) {
 			throw new \Exception('match_id is required');
 		}
-		return $this->_processRequest(self::MATCH_DETAIL_URI, $parameters);
+		return $this->_processRequest(
+			self::MATCH_DETAIL_URI, $parameters, $ttl
+		);
 	}
 	
 	/**
 	 * Return details about an item
 	 * 
 	 * @param array $parameters
+	 * @param integer $ttl [optional] Override the default ttl for this request
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function getItemDetails(array $parameters)
+	public function getItemDetails(array $parameters, $ttl = null)
 	{
 		if(!array_key_exists('item_id', $parameters)) {
 			throw new \Exception('item_id is required');
@@ -188,22 +192,28 @@ class Service
 		if(!is_numeric($parameters['item_id'])) {
 			throw new \Exception('item_id must be a numeric value');
 		}
-		return $this->_processRequest(self::ITEM_DETAIL_URI, $parameters);
+		return $this->_processRequest(
+			self::ITEM_DETAIL_URI, $parameters, $ttl
+		);
 	}
 	
 	/**
 	 * Return details about a recipe
 	 * 
 	 * @param array $parameters
+	 * @param integer $ttl [optional] Override the default ttl for this request
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function getRecipeDetails(array $parameters)
+	public function getRecipeDetails(array $parameters, $ttl = null)
 	{
 		if(!array_key_exists('recipe_id', $parameters)) {
 			throw new \Exception('recipe_id is required');
 		}
-		return $this->_processRequest(self::RECIPE_DETAIL_URI, $parameters);
+		
+		return $this->_processRequest(
+			self::RECIPE_DETAIL_URI, $parameters, $ttl
+		);
 	}
 	
 	/**
@@ -318,8 +328,9 @@ class Service
 			throw new \Exception('Invalid method call ' . $method);
 		}
 		$params = (isset($args[0]) ? $args[0] : array());
+		$ttl = (isset($args[1]) ? $args[1] : $this->_cacheTtl);
 		
-		return $this->_processRequest($this->_methodUriMap[$method], $params);
+		return $this->_processRequest($this->_methodUriMap[$method], $params, $ttl);
 	}
 	
 	/**
@@ -329,15 +340,16 @@ class Service
 	 * 
 	 * @param string $relativeUri Relative to BASE_URI
 	 * @param array $parameters [optional]
+	 * @param integer $ttl [optional]
 	 * @return array
 	 */
-	protected function _processRequest($relativeUri, array $parameters = array())
+	protected function _processRequest($relativeUri, array $parameters = array(), $ttl = null)
 	{
 		$requestUri = $this->_buildRequestUri($relativeUri, $parameters);
 		Cache::setDirectory($this->_cacheDirectory);
 		
 		if(!$this->_result = $this->_getCachedResult($requestUri)) {
-			$this->_executeCurl($requestUri);
+			$this->_executeCurl($requestUri, $ttl);
 		}
 		return (array) json_decode($this->_result, $this->_returnAssoc);
 	}
@@ -348,7 +360,7 @@ class Service
 	 * @param string $requestUri
 	 * @throws \Exception
 	 */
-	protected function _executeCurl($requestUri)
+	protected function _executeCurl($requestUri, $ttl = null)
 	{
 		$options = $this->_curlOptions + 
 			array(
@@ -370,12 +382,14 @@ class Service
 		if($this->_throwCurlExceptions 
 			&& $this->_curlInfo['http_code'] !== 200 
 			&& $this->_curlInfo['http_code'] !== 500) {
-			throw new \Exception('cURL http_code ' . $this->_curlInfo['http_code']);
+			throw new \Exception('cURL http_code ' . 
+				$this->_curlInfo['http_code']);
 		}
 		curl_close($ch);
 		
 		if(null !== $this->_cacheDirectory) {
-			Cache::save($requestUri, $this->_result, $this->_cacheTtl);
+			$ttl = ($ttl ? $ttl : $this->_cacheTtl);
+			Cache::save($requestUri, $this->_result, $ttl);
 		}
 	}
 	
