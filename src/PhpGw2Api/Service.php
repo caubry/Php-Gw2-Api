@@ -170,7 +170,7 @@ class Service
 		if(!array_key_exists('match_id', $parameters)) {
 			throw new \Exception('match_id is required');
 		}
-		return $this->_processRequest(self::MATCH_URI, $parameters);
+		return $this->_processRequest(self::MATCH_DETAIL_URI, $parameters);
 	}
 	
 	/**
