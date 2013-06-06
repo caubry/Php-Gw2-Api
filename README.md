@@ -3,6 +3,11 @@ PhpGw2Api
 
 >PhpGw2Api is a PHP wrapper for the GW2 API.
 
+Requirements
+-
+- PHP 5.3+
+- cURL
+
 Usage
 -
 
