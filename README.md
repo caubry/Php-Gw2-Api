@@ -108,6 +108,30 @@ The following draws reference from [https://forum-en.guildwars2.com/forum/commun
 
     $service->getRecipeDetails(array('recipe_id' => 984));
 
+### getGuildDetails
+
+*Required parameters: guild_id or guild_name*
+
+    $service->getGuildDetails(array('guild_name' => 'In Time'));
+
+### getBuild
+
+    $service->getBuild();
+
+### getColours
+
+*Optional parameters: lang*
+
+    $service->getColours(array('lang' => 'fr'));
+
+### getColors
+
+Alias of `getColours()` for our American friends.
+
+*Optional parameters: lang*
+
+    $service->getColors(array('lang' => 'fr'));
+
 License
 - 
 Released under the [MIT licence](http://opensource.org/licenses/MIT)

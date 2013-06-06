@@ -43,7 +43,10 @@ class Service
 			ITEM_URI			= '/items.json',
 			ITEM_DETAIL_URI		= '/item_details.json',
 			RECIPE_URI			= '/recipes.json',
-			RECIPE_DETAIL_URI	= '/recipe_details.json';
+			RECIPE_DETAIL_URI	= '/recipe_details.json',
+			GUILD_DETAIL_URI	= '/guild_details.json',
+			BUILD_URI			= '/build.json',
+			COLOUR_URI			= '/colors.json';
 	
 	/**
 	 * Map method to their respective URIs
@@ -64,7 +67,11 @@ class Service
 		'getItems'			=> self::ITEM_URI,
 		'getItemDetails'	=> self::ITEM_DETAIL_URI,
 		'getRecipes'		=> self::RECIPE_URI,
-		'getRecipeDetails'	=> self::RECIPE_DETAIL_URI
+		'getRecipeDetails'	=> self::RECIPE_DETAIL_URI,
+		'getGuildDetails'	=> self::GUILD_DETAIL_URI,
+		'getBuild'			=> self::BUILD_URI,
+		'getColours'		=> self::COLOUR_URI, // Correct spelling ^^
+		'getColors'			=> self::COLOUR_URI
 	);
 	
 	/**
@@ -213,6 +220,28 @@ class Service
 		
 		return $this->_processRequest(
 			self::RECIPE_DETAIL_URI, $parameters, $ttl
+		);
+	}
+	
+	/**
+	 * Return details about a guild
+	 * 
+	 * Either the guild ID or guild name is required
+	 * 
+	 * @param array $parameters
+	 * @param integer $ttl [optional] Override the default ttl for this request
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function getGuildDetails(array $parameters, $ttl = null)
+	{
+		if(!array_key_exists('guild_id', $parameters) &&
+			!array_key_exists('guild_name', $parameters)) {
+			throw new \Exception('guild_id or guild_name is required');
+		}
+		
+		return $this->_processRequest(
+			self::GUILD_DETAIL_URI, $parameters, $ttl
 		);
 	}
 	
