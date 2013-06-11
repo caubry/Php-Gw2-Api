@@ -28,6 +28,11 @@ Usage
 
     var_dump($item);
 
+Examples
+-
+
+Examples of use can be found [here](https://forum-en.guildwars2.com/forum/community/api/API-Documentation)
+
 Caching
 -
 If a cache directory is specified, the JSON response will be cached locally with the specified lifetime, or a default of 3600 seconds.
