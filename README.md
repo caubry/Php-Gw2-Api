@@ -31,7 +31,7 @@ Usage
 Examples
 -
 
-Examples of use can be found [here](https://forum-en.guildwars2.com/forum/community/api/API-Documentation)
+Examples of use can be found [here](http://www.gw2dashboard.net/)
 
 Caching
 -
