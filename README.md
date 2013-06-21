@@ -142,6 +142,25 @@ Alias of `getColours()` for our American friends.
 
     $service->getColors(array('lang' => 'fr'));
 
+### getContinents
+
+*Optional parameters: lang*
+
+    $service->getContinents(array('lang' => 'fr'));
+
+### getMaps
+
+*Optional parameters: lang, map_id*
+
+    $service->getMaps(array('lang' => 'fr', 'map_id' => 80));
+
+### getMapFloor
+
+*Required parameters: continent_id, floor*
+*Optional parameters: lang*
+
+    $service->getMapFloor(array('continent_id' => 1, 'floor' => 1, 'lang' => 'fr'));
+
 License
 - 
 Released under the [MIT licence](http://opensource.org/licenses/MIT)

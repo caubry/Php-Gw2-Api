@@ -46,7 +46,10 @@ class Service
 			RECIPE_DETAIL_URI	= '/recipe_details.json',
 			GUILD_DETAIL_URI	= '/guild_details.json',
 			BUILD_URI			= '/build.json',
-			COLOUR_URI			= '/colors.json';
+			COLOUR_URI			= '/colors.json',
+			CONTINENT_URI		= '/continents.json',
+			MAP_URI				= '/maps.json',
+			MAP_FLOOR_URI		= '/map_floor.json';
 	
 	/**
 	 * Map method to their respective URIs
@@ -71,7 +74,10 @@ class Service
 		'getGuildDetails'	=> self::GUILD_DETAIL_URI,
 		'getBuild'			=> self::BUILD_URI,
 		'getColours'		=> self::COLOUR_URI, // Correct spelling ^^
-		'getColors'			=> self::COLOUR_URI
+		'getColors'			=> self::COLOUR_URI,
+		'getContinents'		=> self::CONTINENT_URI,
+		'getMaps'			=> self::MAP_URI,
+		'getMapFloor'		=> self::MAP_FLOOR_URI
 	);
 	
 	/**
@@ -242,6 +248,26 @@ class Service
 		
 		return $this->_processRequest(
 			self::GUILD_DETAIL_URI, $parameters, $ttl
+		);
+	}
+	
+	/**
+	 * Return details about a map floor
+	 * 
+	 * @param array $parameters
+	 * @param integer $ttl [optional] Override the default ttl for this request
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function getMapFloor(array $parameters, $ttl = null)
+	{
+		if(!array_key_exists('continent_id', $parameters) ||
+			!array_key_exists('floor', $parameters)) {
+			throw new \Exception('continent_id and floor are required');
+		}
+		
+		return $this->_processRequest(
+			self::MAP_FLOOR_URI, $parameters, $ttl
 		);
 	}
 	
