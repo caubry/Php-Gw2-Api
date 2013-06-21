@@ -23,7 +23,7 @@ namespace PhpGw2Api;
  * @category	PhpGw2Api
  * @package		Cache
  * @author		James McFadden <james@jamesmcfadden.co.uk>
- * @license		http://www.php.net/license/3_01.txt  PHP License 3.01
+ * @license		http://opensource.org/licenses/MIT	MIT
  * @version		0.1
  * @link		https://github.com/jamesmcfadden/PhpGw2Api
  * @see			https://forum-en.guildwars2.com/forum/community/api/API-Documentation
