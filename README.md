@@ -68,6 +68,12 @@ The following draws reference from [https://forum-en.guildwars2.com/forum/commun
 *Optional parameters: lang*
 
     $service->getEventNames(array('lang' => 'fr'));
+
+### getEventDetails
+
+*Optional parameters: event_id, lang*
+
+    $service->getEventDetails(array('event_id' => 'EED8A79F-B374-4AE6-BA6F-B7B98D9D7142', 'lang' => 'fr'));
     
 ### getMapNames
 

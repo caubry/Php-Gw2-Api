@@ -35,6 +35,7 @@ class Service
 	const	BASE_URI			= 'https://api.guildwars2.com',
 			EVENT_URI			= '/events.json',
 			EVENT_NAME_URI		= '/event_names.json',
+			EVENT_DETAIL_URI	= '/event_details.json',
 			MAP_NAME_URI		= '/map_names.json',
 			WORLD_NAME_URI		= '/world_names.json',
 			MATCH_URI			= '/wvw/matches.json',
@@ -62,6 +63,7 @@ class Service
 	protected $_methodUriMap = array(
 		'getEvents'			=> self::EVENT_URI,
 		'getEventNames'		=> self::EVENT_NAME_URI,
+		'getEventDetails'	=> self::EVENT_DETAIL_URI,
 		'getMapNames'		=> self::MAP_NAME_URI,
 		'getWorldNames'		=> self::WORLD_NAME_URI,
 		'getMatches'		=> self::MATCH_URI,
