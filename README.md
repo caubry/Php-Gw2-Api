@@ -31,7 +31,9 @@ Usage
 Examples
 -
 
-Examples of use can be found [here](http://www.gw2dashboard.net/)
+[Guild Wars 2 - WvW Matchups](http://wordpress.org/plugins/guild-wars-2-wvw-matchups/) Wordpress plugin by **Klaufel** ([implementation example here](http://www.klaufel.com/guild-wars-2-wvw-matchups/))
+
+Some rudimentary examples [here](http://www.gw2dashboard.net/)
 
 Caching
 -
