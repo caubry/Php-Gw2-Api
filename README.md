@@ -1,7 +1,7 @@
-PhpGw2Api
+Php-Gw2-Api
 =========
 
->PhpGw2Api is a PHP wrapper for the GW2 API.
+>Php-Gw2-Api is a PHP wrapper for the Guild Wars 2 API.
 
 Requirements
 -
