@@ -176,3 +176,5 @@ Released under the [MIT licence](http://opensource.org/licenses/MIT)
 Feedback & contribution
 -
 Feedback and contribution are welcomed!
+
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/51a795241ce6563768e2107dbe650e5a "githalytics.com")](http://githalytics.com/jamesmcfadden/Php-Gw2-Api)
