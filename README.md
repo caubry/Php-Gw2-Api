@@ -169,6 +169,10 @@ Alias of `getColours()` for our American friends.
 
     $service->getMapFloor(array('continent_id' => 1, 'floor' => 1, 'lang' => 'fr'));
 
+### getFiles
+
+    $service->getFiles();
+
 License
 - 
 Released under the [MIT licence](http://opensource.org/licenses/MIT)

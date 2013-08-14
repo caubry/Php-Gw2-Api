@@ -50,7 +50,8 @@ class Service
 			COLOUR_URI			= '/colors.json',
 			CONTINENT_URI		= '/continents.json',
 			MAP_URI				= '/maps.json',
-			MAP_FLOOR_URI		= '/map_floor.json';
+			MAP_FLOOR_URI		= '/map_floor.json',
+			FILE_URI			= '/files.json';
 	
 	/**
 	 * Map method to their respective URIs
@@ -79,7 +80,8 @@ class Service
 		'getColors'			=> self::COLOUR_URI,
 		'getContinents'		=> self::CONTINENT_URI,
 		'getMaps'			=> self::MAP_URI,
-		'getMapFloor'		=> self::MAP_FLOOR_URI
+		'getMapFloor'		=> self::MAP_FLOOR_URI,
+		'getFiles'			=> self::FILE_URI
 	);
 	
 	/**
