@@ -408,7 +408,13 @@ class Service
 		Cache::setDirectory($this->_cacheDirectory);
 		
 		if(!$this->_result = $this->_getCachedResult($requestUri)) {
+			
 			$this->_executeCurl($requestUri, $ttl);
+			
+			if(null !== $this->_cacheDirectory) {
+				$ttl = ($ttl ? $ttl : $this->_cacheTtl);
+				Cache::save($requestUri, $this->_result, $ttl);
+			}
 		}
 		return (array) json_decode($this->_result, $this->_returnAssoc);
 	}
@@ -419,7 +425,7 @@ class Service
 	 * @param string $requestUri
 	 * @throws \Exception
 	 */
-	protected function _executeCurl($requestUri, $ttl = null)
+	protected function _executeCurl($requestUri)
 	{
 		$options = $this->_curlOptions + 
 			array(
@@ -445,11 +451,6 @@ class Service
 				$this->_curlInfo['http_code']);
 		}
 		curl_close($ch);
-		
-		if(null !== $this->_cacheDirectory) {
-			$ttl = ($ttl ? $ttl : $this->_cacheTtl);
-			Cache::save($requestUri, $this->_result, $ttl);
-		}
 	}
 	
 	/**
