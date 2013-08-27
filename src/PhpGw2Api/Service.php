@@ -148,6 +148,22 @@ class Service
 	protected $_cacheTtl = 3600;
 	
 	/**
+	 * Whether or not to use HTTP pipelining
+	 * 
+	 * @var boolean
+	 */
+	protected $_pipeline = false;
+	
+	/**
+	 * The request stack of URI endpoints
+	 * 
+	 * Only used if pipelining is set to true
+	 * 
+	 * @var boolean
+	 */
+	protected $_requestStack = array();
+	
+	/**
 	 * Handle dependencies
 	 */
 	public function __construct($cachePath = null, $cacheTtl = 3600)
@@ -361,6 +377,16 @@ class Service
 	}
 	
 	/**
+	 * Set whether to use HTTP pipelining
+	 * 
+	 * @param boolean $bool
+	 */
+	public function initStack()
+	{
+		$this->_pipeline = true;
+	}
+	
+	/**
 	 * Return information about the cURL request
 	 * 
 	 * @return array
@@ -368,6 +394,29 @@ class Service
 	public function getCurlInfo()
 	{
 		return $this->_curlInfo;
+	}
+	
+	/**
+	 * Execute a stack of URLs using HTTP pipelining
+	 * 
+	 * This method is only meant for use if pipelining is set to true. If it
+	 * is called when pipelining is set to false an exception will be thrown
+	 * 
+	 * @return array
+	 */
+	public function executeStack()
+	{
+		if(!$this->_pipeline) {
+			throw new \Exception('Call to executeStack when pipelining is set to false');
+		}
+				
+		$this->_executeCurlPipeline($this->_requestStack);
+
+		foreach($this->_result as $i => $r) {
+			
+			$this->_result[$i] = $this->_jsonDecode($r);
+		}
+		return $this->_result;
 	}
 	
 	/**
@@ -395,15 +444,22 @@ class Service
 	/**
 	 * Process a request
 	 * 
-	 * Either retrieve results from the cache or query the API itself
+	 * Either retrieve results from the cache or query the API itself. If pipelining is set
+	 * to true, just register the URI on the stack and return null.
 	 * 
 	 * @param string $relativeUri Relative to BASE_URI
 	 * @param array $parameters [optional]
 	 * @param integer $ttl [optional]
-	 * @return array
+	 * @return null|array
 	 */
 	protected function _processRequest($relativeUri, array $parameters = array(), $ttl = null)
 	{
+		if($this->_pipeline === true) {
+			
+			$this->_requestStack[] = $this->_buildRequestUri($relativeUri, $parameters);
+			return;
+		}
+		
 		$requestUri = $this->_buildRequestUri($relativeUri, $parameters);
 		Cache::setDirectory($this->_cacheDirectory);
 		
@@ -416,7 +472,7 @@ class Service
 				Cache::save($requestUri, $this->_result, $ttl);
 			}
 		}
-		return (array) json_decode($this->_result, $this->_returnAssoc);
+		return $this->_jsonDecode($this->_result);
 	}
 	
 	/**
@@ -427,19 +483,7 @@ class Service
 	 */
 	protected function _executeCurl($requestUri)
 	{
-		$options = $this->_curlOptions + 
-			array(
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_SSL_VERIFYPEER => false,
-				CURLOPT_FAILONERROR => false,
-				CURLOPT_CONNECTTIMEOUT => 10,
-				CURLOPT_HEADER => false,
-				CURLOPT_URL => $requestUri,
-				CURLOPT_REFERER => $requestUri
-			);
-
-		$ch = curl_init();
-		curl_setopt_array($ch, $options);
+		$ch = $this->_getCurlHandle($requestUri, $this->_curlOptions);
 
 		$this->_result = curl_exec($ch);
 		$this->_curlInfo = curl_getinfo($ch);
@@ -454,6 +498,66 @@ class Service
 	}
 	
 	/**
+	 * Execute multiple cURL requests in parallel
+	 * 
+	 * @param array $urls
+	 * @todo Make use of caching
+	 */
+	protected function _executeCurlPipeline(array $urls)
+	{	
+		$this->_result = array();
+		$curlHandles = array();
+		
+		foreach($urls as $i => $url) {
+			$curlHandles[$i] = $this->_getCurlHandle($url);			
+		}
+		
+		$mh = curl_multi_init();
+		
+		foreach($curlHandles as $ch) {
+			curl_multi_add_handle($mh,$ch);
+		}
+		
+		do {
+			curl_multi_exec($mh, $processing);
+		} while($processing > 0);
+		
+		foreach($curlHandles as $ch) {
+			$this->_result[] = curl_multi_getcontent($ch);
+			curl_multi_remove_handle($mh, $ch); 
+		}
+		curl_multi_close($mh);
+	}
+	
+	/**
+	 * Get a cURL handle with some default options set
+	 * 
+	 * Allows a consistent handle to be used in regular and pipeline
+	 * requests
+	 * 
+	 * @param array $options
+	 * @return resource
+	 */
+	protected function _getCurlHandle($url, array $options = array())
+	{
+		$handleOptions = $options + 
+			array(
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_SSL_VERIFYPEER => false,
+				CURLOPT_FAILONERROR => false,
+				CURLOPT_CONNECTTIMEOUT => 10,
+				CURLOPT_HEADER => false,
+				CURLOPT_URL => $url,
+				CURLOPT_REFERER => $url
+			);
+
+		$ch = curl_init();
+		curl_setopt_array($ch, $handleOptions);
+		
+		return $ch;
+	}
+	
+	/**
 	 * Attempt to get a cache result based on a request URI
 	 * 
 	 * @param string $requestUri
@@ -465,6 +569,17 @@ class Service
 			return false;
 		}
 		return Cache::retrieve($requestUri);
+	}
+	
+	/**
+	 * Return a JSON decoded array
+	 * 
+	 * @param string $json
+	 * @return array
+	 */
+	protected function _jsonDecode($json)
+	{
+		return (array) json_decode($json, $this->_returnAssoc);
 	}
 	
 	/**

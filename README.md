@@ -54,6 +54,33 @@ Additionally, TTL may be specified on a per request basis:
 
     $service->getItems(array(), 60);
 
+Parallel Requests
+-
+PhpGw2Api supports HTTP pipelining, meaning that you may make multiple API requests in parallel. This is substantially quicker and more efficient than running multiple requests one after the other.
+
+Here is an example of running multiple requests in parallel:
+
+	$service = new PhpGw2Api\Service('.');
+	$items = $service->getItems();
+	$details = array();
+
+	// Initialise a stack of requests
+	$service->initStack();
+
+	// Each subsequest request will be registered on the stack
+	foreach($items['items'] as $x => $i) {
+
+		if($x == 1000) {
+			break;
+		}
+		$details[$i] = $service->getItemDetails(array('item_id' => $i));
+	}
+
+	// Execute the stack, retrieving the results
+	$results = $service->executeStack();
+
+Results are returned as an array, in order of when they were registered on the stack.
+
 Reference
 -
 
